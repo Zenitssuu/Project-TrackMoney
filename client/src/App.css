@@ -47,6 +47,7 @@ form input[type="datetime-local"]{
 form div.basic{
   display: flex;
   gap: 0.5rem;
+  width: 95%;
   margin-bottom: 0.5rem;
 }
 form button{
@@ -61,6 +62,15 @@ form button{
 }
 div.transactions{
   margin-top: 1rem;
+  height: 20rem;
+  /* border: 1px solid red; */
+  overflow: scroll;
+  padding: 0 10px;
+  border-bottom: 1px solid #30313d;
+
+}
+.transactions::-webkit-scrollbar{
+  display: none;
 }
 div.transaction{
   display: flex;
@@ -82,10 +92,10 @@ div.transaction div.new-description{
 div.right{
   text-align: right;
 }
-div.price.green{
+.green{
   color: #1c1;
 }
-div.price.red{
+.red{
   color: #c11;
 }
 div.datetime{

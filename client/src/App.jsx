@@ -1,18 +1,51 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
 
   const [name,setName] = useState('');
-  const [dateTime,setDateTime] = useState('');
+  const [datetime,setDateTime] = useState('');
   const [description,setDescription] = useState('');
+  const [transaction,setTransaction] = useState([])
 
-  const addNewTransaction = () => {};
+  const addNewTransaction = (e) => {
+    e.preventDefault();
+    // const url = JSON.stringify(import.meta.env.VITE_REACT_APP_API_URL);
+    // console.log(url);
+    const price = name.split(' ')[0];
+    fetch('http://localhost:3000/api/transaction',{
+      method:'POST',
+      headers:{'Content-type':'application/json'},
+      body:JSON.stringify({price,name:name.substring(price.length+1),description,datetime})
+    })
+    .then((res) => 
+      res.json())
+    .then((res)=>{
+      setDateTime('');
+      setName('');
+      setDescription('');
+      console.log(res)
+    })
+    getAllTransaction();
+  };
 
+  const [totalAmount,setTotalAmount] = useState(0);
+  let Amount = 0;
+  const getAllTransaction = async ()=>{
+    const response = await fetch('http://localhost:3000/api/transactions');
+    const data = await response.json();
+    console.log(data);
+    setTransaction(data);
+    data.forEach(currTransac => {
+      Amount+= currTransac.price -'0';
+    });
+    setTotalAmount(Amount);
+  }
+  useEffect(()=>getAllTransaction,[])
   return (
     <main>
-      <h1>$400 <span>.00</span></h1>
+      <h1 className={"" + (totalAmount < 0 ? "red" : "green")}>{totalAmount} <span>Rs</span></h1>
       <form onSubmit={addNewTransaction}>
         <div className='basic'>
           <input
@@ -20,40 +53,33 @@ function App() {
             onChange={(e)=> setName(e.target.value)}
            type="text" placeholder='+200 new samsung tv' />
           <input
-            value={dateTime}
+            value={datetime}
             onChange={(e)=> setDateTime(e.target.value)}
-           type="datetime-local" />
+           type="date" />
         </div>
-        <div
-        value={description}
-        onChange={(e)=> setDescription(e.target.value)}
-         className='description'>
-          <input type="text" placeholder='description'/>
+        <div className='description'>
+          <input
+          value={description}
+          onChange={(e)=> setDescription(e.target.value)} 
+          type="text" placeholder='description'/>
         </div>
         <button type='submit'>Add new transaction</button>
       </form>
+      
       <div className="transactions">
-        <div className="transaction">
-          <div className="left">
-            <div className="name">New Samsung tv</div>
-            <div className="new-description">it was time for new tv</div>
-          </div>
-          <div className="right">
-            <div className="price red"> -$500</div>
-            <div className="datetime">2022-12-18 15:45</div>
-          </div>
+      {transaction.length > 0 && transaction.slice().reverse().map((transaction)=>(
+        <div className="transaction" key={transaction._id}>
+        <div className="left">
+          <div className="name">{transaction.name}</div>
+          <div className="new-description">{transaction.description}</div>
         </div>
-
-        <div className="transaction">
-          <div className="left">
-            <div className="name">New project</div>
-            <div className="new-description">it was time for new tv</div>
-          </div>
-          <div className="right">
-            <div className="price green">+$800</div>
-            <div className="datetime">2022-12-18 15:45</div>
-          </div>
+        <div className="right">
+          <div className={"price " + (transaction.price < 0 ? "red" : "green")}>{transaction.price}</div>
+          <div className="datetime">{transaction.datetime}</div>
         </div>
+      </div>
+      ))}
+      <p>{}</p>
       </div>
     </main>
   )
