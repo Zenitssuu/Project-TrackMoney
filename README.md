@@ -21,3 +21,16 @@
 # Chart.js is used for real-time graph representation.
 # Express.js is used seamless connection between Node.js, React.js and MongoDB.
 # optimized RestApis' for fast and secure fetching/alteration of data.
+
+
+# Apis' :
+Base: http://localhost:3000/api/
+1. Income: 
+    -> add: /income/add-income
+    -> get: /income/get-incomes
+    -> delete: /income/delete-income/:id
+
+2. Expense:
+    -> add: /expense/add-expense
+    -> get: /expense/get-expenses
+    -> delete: /expense/delete-expense/:id
